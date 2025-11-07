@@ -15,10 +15,20 @@ router.get("/staff", async (req, res) => {
 
 // ✅ Add staff
 router.post("/addstaff", async (req, res) => {
-  const newStaff = new Staff(req.body);
-  await newStaff.save();
-  res.json({ success: true, msg: "Staff added successfully" });
+  try {
+    const newStaff = new Staff(req.body);
+    await newStaff.save();
+    res.json({
+      success: true,
+      msg: "Staff added successfully",
+      staff: newStaff, // 👈 add this line to return created staff
+    });
+  } catch (err) {
+    console.error("Add Staff Error:", err);
+    res.status(500).json({ success: false, msg: "Staff creation failed", error: err.message });
+  }
 });
+
 
 // ✅ Update (disable / enable / logout)
 router.put("/updatestaff/:id", async (req, res) => {
