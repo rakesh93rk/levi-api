@@ -2,79 +2,34 @@ const express = require("express");
 const router = express.Router();
 const Staff = require("./Staff");
 
-function genId() {
-  return Math.floor(1000 + Math.random() * 9000).toString();
-}
-function genPass() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}
-
-// ✅ Create User
-router.post("/createUser", async (req, res) => {
-  try {
-    const { name, mobile } = req.body;
-    const id = genId();
-    const password = genPass();
-    const newUser = new Staff({ id, name, mobile, password });
-    await newUser.save();
-    res.json({ success: true, msg: "User created", id, password });
-  } catch (err) {
-    res.status(500).json({ success: false, msg: err.message });
-  }
+// ✅ Test route (health check)
+router.get("/", (req, res) => {
+  res.json({ success: true, msg: "Levi Staff API working fine 🚀" });
 });
 
-// ✅ Get Users
-router.get("/getUsers", async (req, res) => {
-  const users = await Staff.find();
-  res.json(users);
+// ✅ Get all staff
+router.get("/staff", async (req, res) => {
+  const staffList = await Staff.find();
+  res.json(staffList);
 });
 
-// ✅ Login
-router.post("/login", async (req, res) => {
-  const { id, password, deviceid } = req.body;
-  const user = await Staff.findOne({ id });
-  if (!user) return res.json({ success: false, msg: "User not found" });
-  if (user.disabled === "TRUE") return res.json({ success: false, msg: "User is disabled" });
-  if (user.password !== password) return res.json({ success: false, msg: "Incorrect password" });
-
-  user.active = "TRUE";
-  user.deviceid = deviceid || "";
-  await user.save();
-
-  res.json({ success: true, msg: "Login successful", id });
+// ✅ Add staff
+router.post("/addStaff", async (req, res) => {
+  const newStaff = new Staff(req.body);
+  await newStaff.save();
+  res.json({ success: true, msg: "Staff added successfully" });
 });
 
-// ✅ Update (Enable/Disable)
-router.post("/updateUser", async (req, res) => {
-  const { id, disabled } = req.body;
-  const user = await Staff.findOne({ id });
-  if (!user) return res.json({ success: false, msg: "User not found" });
-
-  user.disabled = disabled;
-  user.active = disabled === "TRUE" ? "FALSE" : "TRUE";
-  await user.save();
-
-  res.json({ success: true, msg: "User updated" });
+// ✅ Update staff
+router.put("/updateStaff/:id", async (req, res) => {
+  await Staff.findByIdAndUpdate(req.params.id, req.body);
+  res.json({ success: true, msg: "Staff updated successfully" });
 });
 
-// ✅ Force Logout
-router.post("/forceLogout", async (req, res) => {
-  const { id } = req.body;
-  const user = await Staff.findOne({ id });
-  if (!user) return res.json({ success: false, msg: "User not found" });
-
-  user.active = "FALSE";
-  user.deviceid = "";
-  await user.save();
-
-  res.json({ success: true, msg: "Force logout done" });
-});
-
-// ✅ Delete User
-router.delete("/deleteUser", async (req, res) => {
-  const { id } = req.body;
-  await Staff.deleteOne({ id });
-  res.json({ success: true, msg: "User deleted" });
+// ✅ Delete staff
+router.delete("/deleteStaff/:id", async (req, res) => {
+  await Staff.findByIdAndDelete(req.params.id);
+  res.json({ success: true, msg: "Staff deleted successfully" });
 });
 
 module.exports = router;
