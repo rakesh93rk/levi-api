@@ -1,10 +1,13 @@
 const mongoose = require("mongoose");
 
-const staffSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  position: { type: String },
-  email: { type: String },
-  phone: { type: String },
+const StaffSchema = new mongoose.Schema({
+  userId: String,
+  name: String,
+  mobile: String,
+  password: String,
+  active: { type: Boolean, default: true },
+  deviceId: { type: String, default: "" },
+  disabled: { type: Boolean, default: false }
 });
 
-module.exports = mongoose.model("Staff", staffSchema);
+module.exports = mongoose.model("Staff", StaffSchema);
