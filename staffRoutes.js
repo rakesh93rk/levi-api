@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Staff = require("../models/Staff");
+const Staff = require("./Staff");
 
 function genId() {
   return Math.floor(1000 + Math.random() * 9000).toString();
