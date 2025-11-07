@@ -12,22 +12,40 @@ router.get("/staff", async (req, res) => {
   const staffList = await Staff.find();
   res.json(staffList);
 });
-
 // ✅ Add staff
 router.post("/addstaff", async (req, res) => {
   try {
-    const newStaff = new Staff(req.body);
+    // 🔹 Generate 4-digit custom ID
+    const userId = Math.floor(1000 + Math.random() * 9000).toString();
+
+    // 🔹 Collect data
+    const { name, mobile, password } = req.body;
+
+    // 🔹 Create new staff
+    const newStaff = new Staff({
+      userId,
+      name,
+      mobile,
+      password,
+      active: true,
+      deviceid: "",
+      disabled: false
+    });
+
     await newStaff.save();
+
+    // 🔹 Send full staff data back
     res.json({
       success: true,
       msg: "Staff added successfully",
-      staff: newStaff, // 👈 add this line to return created staff
+      staff: newStaff
     });
   } catch (err) {
     console.error("Add Staff Error:", err);
     res.status(500).json({ success: false, msg: "Staff creation failed", error: err.message });
   }
 });
+
 
 
 // ✅ Update (disable / enable / logout)
