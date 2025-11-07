@@ -1,13 +1,10 @@
 const mongoose = require("mongoose");
 
 const staffSchema = new mongoose.Schema({
-  id: String,
-  name: String,
-  mobile: String,
-  password: String,
-  active: { type: String, default: "FALSE" },
-  deviceid: { type: String, default: "" },
-  disabled: { type: String, default: "FALSE" }
+  name: { type: String, required: true },
+  position: { type: String },
+  email: { type: String },
+  phone: { type: String },
 });
 
 module.exports = mongoose.model("Staff", staffSchema);
