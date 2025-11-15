@@ -46,12 +46,17 @@ router.post("/addstaff", async (req, res) => {
   }
 });
 
+router.put("/updatestaff/:userId", async (req, res) => {
+  const staff = await Staff.findOneAndUpdate(
+    { userId: req.params.userId },   // << IMPORTANT
+    req.body,
+    { new: true }
+  );
 
+  if (!staff)
+    return res.status(404).json({ success: false, msg: "Staff not found" });
 
-// ✅ Update (disable / enable / logout)
-router.put("/updatestaff/:id", async (req, res) => {
-  await Staff.findByIdAndUpdate(req.params.id, req.body);
-  res.json({ success: true, msg: "Staff updated" });
+  res.json({ success: true, msg: "Staff updated", staff });
 });
 
 // ✅ Delete
