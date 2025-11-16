@@ -65,4 +65,11 @@ router.delete("/deletestaff/:id", async (req, res) => {
   res.json({ success: true, msg: "Staff deleted" });
 });
 
+// Get single staff by userId
+router.get("/staff/:userId", async (req, res) => {
+  const user = await Staff.findOne({ userId: req.params.userId });
+  if (!user) return res.status(404).json({ success: false, msg: "Staff not found" });
+  res.json(user);
+});
+
 module.exports = router;
