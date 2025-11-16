@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const staffSchema = new mongoose.Schema({
-  userId: { type: String, required: true }, // 👈 4-digit custom ID
+  userId: { type: String, required: true }, // 4-digit custom ID
   name: String,
   mobile: String,
   password: String,
